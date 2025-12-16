@@ -14,11 +14,7 @@ inputs:
     description: "Duration after which artifact will expire in days."
     required: false
     default: "1"
-  exclude-pattern:
-    description: "Skip files that match pattern."
-    required: false
-    default: ".[^/]*"
-  append:
+  append-items:
     description: "Append files and directories."
     required: false
     default: ""
@@ -41,20 +37,19 @@ runs:
           -cvf "$RUNNER_TEMP/artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude="$EXCLUDE_PATTERN" \
+          --exclude=".[^/]*" \
           .
-        if [ -n "$APPEND" ]; then
+        if [ -n "$APPEND_ITEMS" ]; then
           tar \
             --dereference --hard-dereference \
             --directory "$INPUT_PATH" \
             -rvf "$RUNNER_TEMP/artifact.tar" \
-            $APPEND
+            $APPEND_ITEMS
         fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
-        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
-        APPEND: ${{ inputs.append }}
+        APPEND_ITEMS: ${{ inputs.append-items }}
 
     # Switch to gtar (GNU tar instead of bsdtar which is the default in the MacOS runners so we can use --hard-dereference)
     - name: Archive artifact
@@ -68,20 +63,19 @@ runs:
           -cvf "$RUNNER_TEMP/artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude="$EXCLUDE_PATTERN" \
+          --exclude=".[^/]*" \
           .
-        if [ -n "$APPEND" ]; then
+        if [ -n "$APPEND_ITEMS" ]; then
           gtar \
             --dereference --hard-dereference \
             --directory "$INPUT_PATH" \
             -rvf "$RUNNER_TEMP/artifact.tar" \
-            $APPEND
+            $APPEND_ITEMS
         fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
-        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
-        APPEND: ${{ inputs.append }}
+        APPEND_ITEMS: ${{ inputs.append-items }}
 
     # Massage the paths for Windows only
     - name: Archive artifact
@@ -95,22 +89,21 @@ runs:
           -cvf "$RUNNER_TEMP\artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude="$EXCLUDE_PATTERN" \
+          --exclude=".[^\]*" \
           --force-local \
           "."
-          if [ -n "$APPEND" ]; then
+          if [ -n "$APPEND_ITEMS" ]; then
             tar \
               --dereference --hard-dereference \
               --directory "$INPUT_PATH" \
               -rvf "$RUNNER_TEMP\artifact.tar" \
               --force-local \
-              $APPEND
+              $APPEND_ITEMS
           fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
-        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
-        APPEND: ${{ inputs.append }}
+        APPEND_ITEMS: ${{ inputs.append-items }}
 
     - name: Upload artifact
       id: upload-artifact
