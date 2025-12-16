@@ -89,7 +89,7 @@ runs:
           -cvf "$RUNNER_TEMP\artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude=".[^\]*" \
+          --exclude=".[^/]*" \
           --force-local \
           "."
           if [ -n "$APPEND_ITEMS" ]; then
