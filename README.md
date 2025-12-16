@@ -49,6 +49,7 @@ jobs:
 | `path`           | `true`    | `_site/`       | Path of the directory containing the static assets     |
 | `retention-days` | `false`   | `1`            | Duration after which artifact will expire in days      |
 | `exclude-pattern`| `false`   | `.[^/]*`       | Skip files that match pattern (`..` to include hidden )|
+| `append`         | `false`   | ``             | Append files and folders (`.well-known`)               |
 
 ### Outputs 📤
 
