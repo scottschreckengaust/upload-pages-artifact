@@ -43,11 +43,12 @@ jobs:
 
 ### Inputs 📥
 
-| Input            | Required? | Default        | Description                                        |
-| ---------------- | --------- | -------------- | -------------------------------------------------- |
-| `name`           | `false`   | `github-pages` | Artifact name                                      |
-| `path`           | `true`    | `_site/`       | Path of the directory containing the static assets |
-| `retention-days` | `false`   | `1`            | Duration after which artifact will expire in days  |
+| Input            | Required? | Default        | Description                                            |
+| ---------------- | --------- | -------------- | ------------------------------------------------------ |
+| `name`           | `false`   | `github-pages` | Artifact name                                          |
+| `path`           | `true`    | `_site/`       | Path of the directory containing the static assets     |
+| `retention-days` | `false`   | `1`            | Duration after which artifact will expire in days      |
+| `exclude-pattern`| `false`   | `.[^/]*`       | Skip files that match pattern (`..` to include hidden )|
 
 ### Outputs 📤
 
