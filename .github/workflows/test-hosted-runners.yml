@@ -25,7 +25,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Generate files
-      run: mkdir artifact && mkdir artifact2 && mkdir artifact4 && cd artifact && ../script/new-artifact.sh && cp -R artifact artifact3
+      run: mkdir artifact && mkdir artifact2 && mkdir artifact4 && cd artifact && ../script/new-artifact.sh && cd .. && cp -R artifact artifact3
       shell: bash
 
     - name: Upload Pages artifact
