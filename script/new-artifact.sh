@@ -12,4 +12,3 @@ ln -s hello.txt bonjour.txt
 # Create some hidden files or folders
 echo 'foo' > .hidden
 mkdir -p .hidden2 && echo 'bar' > .hidden2/bar
-mkdir ../.well-known && echo 'hello world' > ../.well-known/file
