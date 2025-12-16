@@ -17,7 +17,7 @@ inputs:
   exclude-pattern:
     description: "Skip files that match pattern."
     required: false
-    default: ".[^\/]*"
+    default: ".[^/]*"
 outputs:
   artifact_id:
     description: "The ID of the artifact that was uploaded."
