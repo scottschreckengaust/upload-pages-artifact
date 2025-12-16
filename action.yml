@@ -18,6 +18,11 @@ inputs:
     description: "Skip files that match pattern."
     required: false
     default: ".[^/]*"
+  append:
+    description: "Append files and directories."
+    required: false
+    default: ""
+    
 outputs:
   artifact_id:
     description: "The ID of the artifact that was uploaded."
@@ -38,10 +43,18 @@ runs:
           --exclude=.github \
           --exclude="$EXCLUDE_PATTERN" \
           .
+        if [ -n "$APPEND" ]; then
+          tar \
+            --dereference --hard-dereference \
+            --directory "$INPUT_PATH" \
+            -rvf "$RUNNER_TEMP/artifact.tar" \
+            $APPEND
+        fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
         EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
+        APPEND: ${{ inputs.append }}
 
     # Switch to gtar (GNU tar instead of bsdtar which is the default in the MacOS runners so we can use --hard-dereference)
     - name: Archive artifact
@@ -57,11 +70,19 @@ runs:
           --exclude=.github \
           --exclude="$EXCLUDE_PATTERN" \
           .
+        if [ -n "$APPEND" ]; then
+          gtar \
+            --dereference --hard-dereference \
+            --directory "$INPUT_PATH" \
+            -rvf "$RUNNER_TEMP/artifact.tar" \
+            $APPEND
+        fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
         EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
-        
+        APPEND: ${{ inputs.append }}
+
     # Massage the paths for Windows only
     - name: Archive artifact
       shell: bash
@@ -77,11 +98,20 @@ runs:
           --exclude="$EXCLUDE_PATTERN" \
           --force-local \
           "."
+          if [ -n "$APPEND" ]; then
+            tar \
+              --dereference --hard-dereference \
+              --directory "$INPUT_PATH" \
+              -rvf "$RUNNER_TEMP\artifact.tar" \
+              --force-local \
+              $APPEND
+          fi
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
         EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
-        
+        APPEND: ${{ inputs.append }}
+
     - name: Upload artifact
       id: upload-artifact
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
