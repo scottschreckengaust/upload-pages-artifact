@@ -25,7 +25,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Generate files
-      run: mkdir artifact && mkdir artifact2 && mkdir artifact4 && cd artifact && ../script/new-artifact.sh && cd .. && cp -R artifact artifact3
+      run: |
+        mkdir artifact && mkdir artifact2 && mkdir artifact4 && cd artifact && ../script/new-artifact.sh && \
+        cd .. && cp -R artifact artifact3 && cp -R .well-known artifact3
       shell: bash
 
     - name: Upload Pages artifact
@@ -34,12 +36,13 @@ jobs:
         name: pages-artifact-${{ matrix.os }}
         path: artifact
 
-    - name: Upload Pages artifact overriding the exlusion pattern
+    - name: Upload Pages artifact overriding the exlusion pattern and appended
       uses: ./
       with:
         name: pages-artifact-override-${{ matrix.os }}
         path: artifact3
         exclude-pattern: ..
+        append: ../.well-known
 
     - name: Download artifact
       uses: actions/download-artifact@v4
@@ -47,7 +50,7 @@ jobs:
           name: pages-artifact-${{ matrix.os }}
           path: artifact2
  
-    - name: Download artifact overridden exclusion pattern
+    - name: Download artifact overridden exclusion pattern and appended
       uses: actions/download-artifact@v4
       with:
           name: pages-artifact-override-${{ matrix.os }}
@@ -57,7 +60,7 @@ jobs:
       run: tar -xf artifact2/artifact.tar -C artifact2 && rm artifact2/artifact.tar
       shell: bash
 
-    - name: Extract artifact overridden
+    - name: Extract artifact overridden and appended
       run: tar -xf artifact4/artifact.tar -C artifact4 && rm artifact4/artifact.tar
       shell: bash
     - name: Compare files overriddent
