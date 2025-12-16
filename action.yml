@@ -14,6 +14,10 @@ inputs:
     description: "Duration after which artifact will expire in days."
     required: false
     default: "1"
+  exclude-pattern:
+    description: "Skip files that match pattern."
+    required: false
+    default: ".[^\/]*"
 outputs:
   artifact_id:
     description: "The ID of the artifact that was uploaded."
@@ -32,11 +36,12 @@ runs:
           -cvf "$RUNNER_TEMP/artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude=".[^/]*" \
+          --exclude="$EXCLUDE_PATTERN" \
           .
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
+        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
 
     # Switch to gtar (GNU tar instead of bsdtar which is the default in the MacOS runners so we can use --hard-dereference)
     - name: Archive artifact
@@ -50,12 +55,13 @@ runs:
           -cvf "$RUNNER_TEMP/artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude=".[^/]*" \
+          --exclude="$EXCLUDE_PATTERN" \
           .
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
-
+        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
+        
     # Massage the paths for Windows only
     - name: Archive artifact
       shell: bash
@@ -68,13 +74,14 @@ runs:
           -cvf "$RUNNER_TEMP\artifact.tar" \
           --exclude=.git \
           --exclude=.github \
-          --exclude=".[^/]*" \
+          --exclude="$EXCLUDE_PATTERN" \
           --force-local \
           "."
         echo ::endgroup::
       env:
         INPUT_PATH: ${{ inputs.path }}
-
+        EXCLUDE_PATTERN: ${{ inputs.exclude-pattern }}
+        
     - name: Upload artifact
       id: upload-artifact
       uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
