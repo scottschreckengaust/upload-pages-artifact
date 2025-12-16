@@ -72,6 +72,7 @@ jobs:
     - name: Compare files
       run: |
         rm artifact/.hidden
+        rm -r -f artifact/.hidden2
         diff -qr artifact artifact2
       shell: bash
 
